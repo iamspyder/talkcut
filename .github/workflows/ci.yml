@@ -28,6 +28,8 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run audit:repo
+        env:
+          TALKCUT_FORBIDDEN_NAMES: ${{ secrets.TALKCUT_FORBIDDEN_NAMES }}
       - run: npm audit --omit=dev --audit-level=moderate
       - name: Scan full Git history for secrets
         shell: bash
