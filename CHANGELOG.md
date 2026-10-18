@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.2] — 2026-10-18
+
+- Retry interrupted native-helper downloads, discard partial responses and validate checksums before atomically installing files. This fixes the closed GitHub download connection observed after compiling whisper.cpp in hosted Linux builds.
+- Add regression coverage for connection resets, interrupted streams, cache verification and checksum failures.
+
 ## [1.0.1] — 2026-10-18
 
 - Pin ffmpeg-static to 5.2.0 (FFmpeg b6.0 binaries): the newer Linux binary lacks the `drawtext` filter required for text layers and titles. Keep the real export tests enabled on all three release platforms.

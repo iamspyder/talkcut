@@ -1,14 +1,14 @@
 import fs from 'node:fs/promises';
-import {existsSync,createReadStream} from 'node:fs';
+import {existsSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {createHash} from 'node:crypto';
+import {downloadArtifact} from './native-download.mjs';
 import {spawnSync} from 'node:child_process';
 import ffmpeg from 'ffmpeg-static';
 import ffprobe from 'ffprobe-static';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),native=path.join(root,'native',`${process.platform}-${process.arch}`);
 await fs.mkdir(native,{recursive:true});
-async function download(url,file,sha){if(!existsSync(file)){console.log('Downloading '+path.basename(file));const r=await fetch(url);if(!r.ok)throw Error(`${url}: ${r.status}`);const handle=await fs.open(file+'.part','w');try{for await(const chunk of r.body)await handle.write(chunk);}finally{await handle.close();}await fs.rename(file+'.part',file);}const hash=createHash('sha256');for await(const chunk of createReadStream(file))hash.update(chunk);const digest=hash.digest('hex');if(sha&&digest!==sha)throw Error('Checksum mismatch: '+file);return {file:path.relative(native,file),sha256:digest,source:url};}
+async function download(url,file,sha){if(!existsSync(file))console.log('Downloading '+path.basename(file));const digest=await downloadArtifact(url,file,sha);return {file:path.relative(native,file),sha256:digest,source:url};}
 function run(exe,args){const p=spawnSync(exe,args,{stdio:'inherit',windowsHide:true});if(p.status!==0)throw Error(`${exe} failed: ${p.error||p.status}`);}
 const manifest=[];
 if(process.platform==='win32'){
