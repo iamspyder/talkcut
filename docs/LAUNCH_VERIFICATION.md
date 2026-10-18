@@ -8,7 +8,7 @@ Prepared on 2026-10-18 for **Rajan Gupta**, sole project owner, targeting `iamsp
 - Gitleaks 8.30.1 was downloaded from its official release and checked against its published SHA-256 checksum. A whole-workspace directory scan inspected eligible files, including ignored test data. Large executable/model/archive files were skipped by the configured 50 MB limit; they are excluded from Git. No absence-of-secrets guarantee is implied for opaque binaries.
 - Initial findings were examples in the scanner's own README and encryption material in disposable Electron test profiles. Those disposable files/profiles were removed. The subsequent directory scan found **zero secrets**. No provider credentials were found in the source.
 - The final publishable tree and full new Git history are scanned again with redaction. Reports stay under ignored `.audit/`; reports never print discovered secret values.
-- Source hygiene checks reject common credential formats, personal home paths, prohibited prior-ownership references, generated artifacts and files over 5 MiB. Downloaded helpers/models, node_modules, releases, local projects, QA profiles, exports and `.env*` remain ignored. Small curated sample media, icon files and documentation screenshots are intentionally versioned.
+- Source hygiene checks reject common credential formats, personal home paths, prohibited name references, generated artifacts and files over 5 MiB. Downloaded helpers/models, node_modules, releases, local projects, QA profiles, exports and `.env*` remain ignored. Small curated sample media, icon files and documentation screenshots are intentionally versioned.
 - Ownership search is clean. The author, owner, license copyright and installer metadata use **Rajan Gupta**. Third-party authorship/copyright is retained in dependency notices.
 - No rescript or audapolis imports, packages, source files or bundled helpers were found. Their names occur only in the provenance exclusion statement in the third-party notices.
 
@@ -24,13 +24,13 @@ Prepared on 2026-10-18 for **Rajan Gupta**, sole project owner, targeting `iamsp
 
 ## Still requires release review
 
-- The GitHub Actions workflows are prepared and statically checked locally; hosted three-platform execution is not claimed until the repository/tag is pushed.
-- A draft release is intentional. Verify macOS/Linux behavior on target hardware, signing/notarization, updater assets and SHA-256 manifests before publishing. Unsigned Windows/macOS builds are disclosed in the README.
+- Hosted three-platform builds passed for v1.0.3, which is now published. See the hosted verification follow-up below.
+- v1.0.3 is published and all three public download links work. Target-hardware macOS/Linux smoke testing and signing/notarization remain review items. Unsigned Windows/macOS builds are disclosed in the README.
 - Confirm/archive complete matching Corresponding Source and build inputs for all native GPL/LGPL binaries before distributing installers. In particular, the historical ffprobe package's complete build/dependency sources are not reconstructed here. See THIRD_PARTY_NOTICES.md and upstream [FFmpeg distribution guidance](https://ffmpeg.org/legal.html).
-- Replace `docs/demo.gif` (an explicitly labeled placeholder), configure funding if desired, enable private vulnerability reporting and review synthetic OS-voice redistribution rights.
+- `docs/demo.gif` is the real recorded preview. Private vulnerability reporting is enabled. Review synthetic OS-voice redistribution rights.
 
 See [LAUNCH_FILES.md](LAUNCH_FILES.md) for the complete initial-commit file inventory and added/updated launch-file summary, and [RELEASING.md](RELEASING.md) for exact push commands.
 
 ## Hosted verification follow-up
 
-The repository has now been pushed. See [GITHUB_VERIFICATION.md](GITHUB_VERIFICATION.md) for the successful v1.0.3 three-platform builds, uploaded draft assets, checksums, security settings and remaining release-review limits. The sections above record the earlier local preparation snapshot.
+The repository has now been pushed and v1.0.3 is published. See [GITHUB_VERIFICATION.md](GITHUB_VERIFICATION.md) for the successful v1.0.3 three-platform builds, published release assets, checksums, security settings and remaining release-review limits. The sections above record the earlier local preparation snapshot.

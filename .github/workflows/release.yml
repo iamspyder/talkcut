@@ -91,5 +91,5 @@ jobs:
           generate_release_notes: true
           name: TalkCut ${{ github.ref_name }}
           body: |
-            Maintained and owned by Rajan Gupta. Review platform smoke tests, signing status and native-helper Corresponding Source before publishing this draft. Windows/macOS builds may be unsigned when signing secrets are not configured. Check the SHA256SUMS files before installation.
+            Maintained and owned by Rajan Gupta. Windows/macOS builds are unsigned unless signing secrets are configured. Verify the SHA256SUMS files before installation.
           files: artifacts/*

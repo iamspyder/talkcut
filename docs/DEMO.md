@@ -34,4 +34,4 @@ node scripts/render-demo.mjs
 
 Chrome must be installed (or set `CHROME_PATH`). An installed sans-serif font is used locally; set `DEMO_FONT` to a licensed local font if the platform default is unavailable. Font files, raw captures, temporary profiles, intermediate media and verification reports stay under ignored `app/qa/demo/`; they are not published. The scripts write the final `docs/demo.mp4` and `docs/demo.gif`.
 
-The recording checks sample loading, cleanup/Undo, A/B playback, theme/resize controls and successful export. Rendering verifies the video dimensions/audio stream, fully decodes the MP4, produces a visual review sheet and checks both published files against the repository's 5 MiB file-size limit. The demo does not change the application's installer signing or draft-release status.
+The recording checks sample loading, cleanup/Undo, A/B playback, theme/resize controls and successful export. Rendering verifies the video dimensions/audio stream, fully decodes the MP4, produces a visual review sheet and checks both published files against the repository's 5 MiB file-size limit. v1.0.3 is published; installers remain unsigned.

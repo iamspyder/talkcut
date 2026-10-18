@@ -6,9 +6,9 @@ The initial commit contains the existing TalkCut application plus the launch pre
 
 - Root hygiene: .gitignore, .gitattributes.
 - Ownership/license/community: LICENSE, THIRD_PARTY_NOTICES.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, CHANGELOG.md.
-- GitHub: ci.yml, release.yml, bug_report.yml, feature_request.yml, ISSUE_TEMPLATE/config.yml, PULL_REQUEST_TEMPLATE.md, FUNDING.yml.
-- Documentation/assets: docs/logo.svg, docs/demo.gif (placeholder), docs/screenshots/workspace-light.png and workspace-dark.png, docs/DEPENDENCIES.md, docs/RELEASING.md, docs/LAUNCH_VERIFICATION.md and this manifest.
-- App tooling: eslint.config.mjs; scripts/audit-repo.mjs, notices.mjs, release-assets.mjs, runtime-paths.mjs, demo-placeholder.mjs; tests/release-assets.test.mjs.
+- GitHub: ci.yml, release.yml, bug_report.yml, feature_request.yml, ISSUE_TEMPLATE/config.yml, PULL_REQUEST_TEMPLATE.md.
+- Documentation/assets: docs/logo.svg, docs/demo.gif (real recorded preview), docs/screenshots/workspace-light.png and workspace-dark.png, docs/DEPENDENCIES.md, docs/RELEASING.md, docs/LAUNCH_VERIFICATION.md and this manifest.
+- App tooling: eslint.config.mjs; scripts/audit-repo.mjs, notices.mjs, release-assets.mjs, runtime-paths.mjs; tests/release-assets.test.mjs.
 - Packaged notices: app/LICENSE, app/THIRD_PARTY_NOTICES.md, DeepFilterNet-Apache-2.0.txt, FFmpeg-runtime-build.txt, ffprobe-build-source.txt, ffprobe-runtime-build.txt and npm-notices.txt under app/LICENSES.
 
 ## Updated existing files
@@ -18,7 +18,6 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 ## Complete initial-commit inventory
 
 - .gitattributes
-- .github/FUNDING.yml
 - .github/ISSUE_TEMPLATE/bug_report.yml
 - .github/ISSUE_TEMPLATE/config.yml
 - .github/ISSUE_TEMPLATE/feature_request.yml
@@ -32,7 +31,7 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 - LICENSE
 - README.md
 - SECURITY.md
-- Start TalkCut.cmd
+- app/scripts/start-windows.cmd
 - THIRD_PARTY_NOTICES.md
 - app/.gitignore
 - app/FEATURES.md
@@ -83,7 +82,6 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 - app/scripts/brand-check.mjs
 - app/scripts/browser-check.mjs
 - app/scripts/build-brand.mjs
-- app/scripts/demo-placeholder.mjs
 - app/scripts/export-check.mjs
 - app/scripts/layers-browser-check.mjs
 - app/scripts/layout-check.mjs
@@ -151,7 +149,10 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 ## Demo production follow-up
 
 - docs/demo.mp4 — real 1080p workflow video with audible Before/After comparison.
-- docs/demo.gif — replaced the initial placeholder with a silent workflow preview.
+- docs/demo.gif — real recorded silent workflow preview.
 - docs/DEMO.md — chapters, recording/editing disclosures and production commands.
 - app/scripts/record-demo.mjs and render-demo.mjs — isolated UI recording and local video/GIF rendering.
-- The legacy placeholder generator now refuses to overwrite an existing real demo.
+
+## Published release follow-up
+
+v1.0.3 is published with working public Windows, macOS and Linux downloads. The Windows source launcher is `app/scripts/start-windows.cmd`; run it from a source checkout after installing dependencies. It invokes the adjacent `start.ps1` script.

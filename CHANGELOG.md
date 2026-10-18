@@ -37,4 +37,4 @@ First public open-source release, owned and maintained by Rajan Gupta. Earlier l
 - Cleanup and transcription need human review; retake detection is conservative.
 - Model downloads and optional update checks require connectivity. Studio Sound needs a local preparation pass.
 - Windows installers are unsigned unless a signing certificate is configured. macOS notarization and reliable automatic updates require Apple signing/notarization credentials.
-- Public three-platform release builds have not yet run on GitHub. Local verification is on Windows; see [launch verification](docs/LAUNCH_VERIFICATION.md).
+- Resolved in v1.0.3: three-platform release builds passed on GitHub and the release is published. Target-device GUI verification remains limited to Windows; see [launch verification](docs/LAUNCH_VERIFICATION.md).
