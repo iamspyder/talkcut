@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] — 2026-10-18
+
+- Remove empty optional signing credentials before packaging; unsigned macOS builds now explicitly skip signing rather than interpreting an empty certificate path as the project directory.
+- Add packaging configuration regression tests for unsigned and certificate-configured builds.
+
 ## [1.0.2] — 2026-10-18
 
 - Retry interrupted native-helper downloads, discard partial responses and validate checksums before atomically installing files. This fixes the closed GitHub download connection observed after compiling whisper.cpp in hosted Linux builds.
