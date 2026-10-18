@@ -1,6 +1,6 @@
 {
   "name": "talkcut",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "electron-updater": "^6.8.9",
-    "ffmpeg-static": "^5.2.0",
+    "ffmpeg-static": "5.2.0",
     "ffprobe-static": "^3.1.0",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",

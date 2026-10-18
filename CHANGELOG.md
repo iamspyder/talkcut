@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] — 2026-10-18
+
+- Pin ffmpeg-static to 5.2.0 (FFmpeg b6.0 binaries): the newer Linux binary lacks the `drawtext` filter required for text layers and titles. Keep the real export tests enabled on all three release platforms.
+- Display the package version in the workspace so patch releases cannot leave an outdated UI version label.
+- Preserve the original public v1.0.0 tag; release verification fixes are shipped under this new patch tag.
+
 ## [1.0.0] — 2026-10-18
 
 First public open-source release, owned and maintained by Rajan Gupta. Earlier local development builds were numbered separately; this is the public version baseline.

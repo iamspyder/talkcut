@@ -7002,7 +7002,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 ========================================================================
-ffmpeg-static@5.3.0 — GPL-3.0-or-later — LICENSE
+ffmpeg-static@5.2.0 — GPL-3.0-or-later — LICENSE
 ========================================================================
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

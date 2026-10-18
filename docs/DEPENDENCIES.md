@@ -235,7 +235,7 @@ Generated from app/package-lock.json by npm run notices. Includes direct/transit
 | fast-levenshtein | 2.0.6 | MIT | development | `node_modules/fast-levenshtein` |
 | fast-uri | 3.1.8 | BSD-3-Clause | development | `node_modules/fast-uri` |
 | fdir | 6.5.0 | MIT | development | `node_modules/fdir` |
-| ffmpeg-static | 5.3.0 | GPL-3.0-or-later | runtime/optional | `node_modules/ffmpeg-static` |
+| ffmpeg-static | 5.2.0 | GPL-3.0-or-later | runtime/optional | `node_modules/ffmpeg-static` |
 | ffprobe-static | 3.1.0 | MIT | runtime/optional | `node_modules/ffprobe-static` |
 | file-entry-cache | 11.1.5 | MIT | development | `node_modules/file-entry-cache` |
 | filelist | 1.0.6 | Apache-2.0 | development | `node_modules/filelist` |

@@ -1,4 +1,5 @@
 import {useWorkspaceLayout} from './WorkspaceLayout.jsx';
+import {version as packageVersion} from '../package.json';
 import React,{useEffect,useMemo,useRef,useState,useCallback} from 'react';
 import {ArrowLeft,ArrowRight,AudioLines,BookOpen,Captions,Check,CheckCheck,ChevronDown,ChevronRight,ChevronsLeft,Clapperboard,Clock3,Copy,Download,FileAudio,FileText,Film,FolderOpen,GripVertical,HelpCircle,Image,LayoutTemplate,Link,Loader2,Maximize2,Mic,MoreHorizontal,MousePointer2,Music2,Pause,Play,Plus,Redo2,Scissors,Search,Send,Settings2,ShieldCheck,SkipBack,SkipForward,SlidersHorizontal,Sparkles,Square,Subtitles,Trash2,Undo2,Upload,Video,Volume2,WandSparkles,X,ZoomIn,ZoomOut,Monitor,PanelLeftClose,ArrowUpRight,RotateCcw,Keyboard,Save,ExternalLink,AlertCircle} from 'lucide-react';
 import {uid,clock,clamp,intervals,duration,sourceAt,compositionTime,subtitles,srt,vtt,prepareWords,emptyComposition,isFiller,transcriptSignature} from './model';
@@ -158,7 +159,7 @@ function App(){
     <div className="sidebar-separator"/><div className="sidebar-section-title">PROJECT FILES<span className="count">{assets.filter(a=>comp.assetIds.includes(a.id)).length}</span></div>
     {assets.filter(a=>comp.assetIds.includes(a.id)).map(a=><button key={a.id} className="asset-item" onClick={()=>setPanel('media')}>{a.type==='video'?<Film size={15}/>:<FileAudio size={15}/>}<span>{a.name}</span></button>)}
     <button data-tour-import={hasMedia?'true':undefined} className="sidebar-link import-link" onClick={()=>uploadRef.current.click()}><Plus size={16}/>Add media</button>
-    <div className="sidebar-bottom"><div className="tip-card"><div className="tip-icon"><Sparkles size={15}/></div><strong>A little less editing.<br/>A lot more creating.</strong><p>Select words in your transcript.<br/>Press delete. That’s your cut.</p><button onClick={()=>setModal('help')}>Get to know TalkCut<ArrowUpRight size={13}/></button></div><button className="sidebar-link settings-link" onClick={()=>setModal('settings')}><Settings2 size={16}/>Settings & connections<ChevronRight size={14}/></button><span className="version">TALKCUT STUDIO <span>v1.0.0</span></span></div>
+    <div className="sidebar-bottom"><div className="tip-card"><div className="tip-icon"><Sparkles size={15}/></div><strong>A little less editing.<br/>A lot more creating.</strong><p>Select words in your transcript.<br/>Press delete. That’s your cut.</p><button onClick={()=>setModal('help')}>Get to know TalkCut<ArrowUpRight size={13}/></button></div><button className="sidebar-link settings-link" onClick={()=>setModal('settings')}><Settings2 size={16}/>Settings & connections<ChevronRight size={14}/></button><span className="version">TALKCUT STUDIO <span>v{packageVersion}</span></span></div>
    </aside>
    {workspaceLayout.divider('sidebar')}
    <main className="editor">
