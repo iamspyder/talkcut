@@ -9,9 +9,11 @@
 [![Downloads](https://img.shields.io/github/downloads/iamspyder/talkcut/total)](https://github.com/iamspyder/talkcut/releases)
 [![Build](https://github.com/iamspyder/talkcut/actions/workflows/ci.yml/badge.svg)](https://github.com/iamspyder/talkcut/actions/workflows/ci.yml)
 
-![Demo placeholder — recording coming soon](docs/demo.gif)
+[![Watch the TalkCut demo](docs/demo.gif)](docs/demo.mp4)
 
-*Replace this placeholder GIF with an Import → Clean up → Studio Sound → Export recording before announcement. Screenshots below show the real app. Links/badges become active after the repository and release exist.*
+**[Watch/download the full demo — MP4, 1080p, 1:33](docs/demo.mp4)** · [Direct MP4 download](https://raw.githubusercontent.com/iamspyder/talkcut/main/docs/demo.mp4)
+
+Recorded from the real app using the bundled sample. Hear Studio Sound Before/After in the full video, then see dark mode, resizable panels and a completed 1080p export. The export wait is visibly labeled as accelerated. [Recording details](docs/DEMO.md).
 
 ## Download
 

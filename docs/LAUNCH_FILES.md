@@ -147,3 +147,11 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 - app/tests/native-download.test.mjs — interrupted download/cache/checksum regression tests.
 - app/tests/packaging-config.test.mjs — unsigned/configured signing regression tests.
 - docs/GITHUB_VERIFICATION.md — hosted build, asset and security verification results.
+
+## Demo production follow-up
+
+- docs/demo.mp4 — real 1080p workflow video with audible Before/After comparison.
+- docs/demo.gif — replaced the initial placeholder with a silent workflow preview.
+- docs/DEMO.md — chapters, recording/editing disclosures and production commands.
+- app/scripts/record-demo.mjs and render-demo.mjs — isolated UI recording and local video/GIF rendering.
+- The legacy placeholder generator now refuses to overwrite an existing real demo.

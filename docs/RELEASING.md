@@ -13,7 +13,7 @@ git push origin v1.0.0
 
 The authenticated GitHub CLI account must be `iamspyder`. Creating/pushing triggers CI; pushing the version tag triggers release builds. Version in `app/package.json`, lockfile and tag must match.
 
-Before announcing: replace the demo placeholder; enable private vulnerability reporting, GitHub secret scanning/push protection and branch protection; verify every installer and its checksums on its target OS. Review Corresponding Source and bundled sample voice rights in `THIRD_PARTY_NOTICES.md` before redistributing installers. The release workflow deliberately opens a **draft** release so this final review occurs before public distribution. Publish the draft only after completing these checks.
+Before announcing: review the recorded demo (docs/DEMO.md); enable private vulnerability reporting, GitHub secret scanning/push protection and branch protection; verify every installer and its checksums on its target OS. Review Corresponding Source and bundled sample voice rights in `THIRD_PARTY_NOTICES.md` before redistributing installers. The release workflow deliberately opens a **draft** release so this final review occurs before public distribution. Publish the draft only after completing these checks.
 
 ## Automation
 

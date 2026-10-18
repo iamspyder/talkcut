@@ -1,0 +1,73 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {performance} from 'node:perf_hooks';
+import {_electron} from 'playwright-core';
+import {electronPath} from './runtime-paths.mjs';
+
+// Records the real renderer in an isolated offline profile; never opens user projects.
+const root=process.cwd(),folder=path.join(root,'qa','demo'),frames=path.join(folder,'frames-'+Date.now());
+fs.mkdirSync(frames,{recursive:true});
+const report={framesFolder:path.basename(frames),frames:[],scenes:[],audio:[],errors:[],checks:[]},captured=[];
+const desktop=await _electron.launch({executablePath:electronPath,args:[root],env:{...process.env,TALKCUT_TEST_OFFLINE:'1',TALKCUT_TEST_DATA:path.join(folder,'profile-'+Date.now())}});
+let session,start=0,count=0;
+try{
+ const page=await desktop.firstWindow();page.setDefaultTimeout(30000);
+ page.on('pageerror',error=>report.errors.push(error.message));
+ await page.getByRole('button',{name:'Try with a sample',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Skip tour',exact:true}).click();
+ await page.setViewportSize({width:1440,height:810});
+ await page.evaluate(()=>{
+  const style=document.createElement('style');style.textContent='.demo-cursor{position:fixed;left:720px;top:405px;width:24px;height:24px;border:2px solid #7357e9;border-radius:50%;background:#7357e925;box-shadow:0 0 0 4px #ffffff80;transform:translate(-50%,-50%);z-index:2147483000;pointer-events:none}';document.head.append(style);
+  const cursor=document.createElement('div');cursor.className='demo-cursor';document.body.append(cursor);
+  document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
+  document.addEventListener('pointerdown',()=>cursor.animate([{scale:1},{scale:.65},{scale:1}],{duration:350}));
+ });
+ let position={x:720,y:405};
+ const hold=ms=>page.waitForTimeout(ms),elapsed=()=>(performance.now()-start)/1000;
+ const scene=(title,detail)=>{report.scenes.push({start:elapsed(),title,detail});console.log(title);};
+ const move=async(x,y)=>{const initial={...position};for(let i=1;i<=22;i++){const t=i/22,e=t*t*(3-2*t);await page.mouse.move(initial.x+(x-initial.x)*e,initial.y+(y-initial.y)*e);await hold(13);}position={x,y};};
+ const click=async locator=>{const box=await locator.boundingBox();assert(box);await move(box.x+box.width/2,box.y+box.height/2);await hold(180);await locator.click();await hold(350);};
+ session=await desktop.context().newCDPSession(page);start=performance.now();
+ session.on('Page.screencastFrame',event=>{const file=String(count++).padStart(6,'0')+'.jpg';captured.push({file,data:Buffer.from(event.data,'base64')});report.frames.push({file,time:elapsed()});session.send('Page.screencastFrameAck',{sessionId:event.sessionId}).catch(()=>{});});
+ await session.send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:1440,maxHeight:810,everyNthFrame:2});
+ scene('01  Start with your story','A real app recording using the bundled sample — no account or API keys.');
+ await hold(1800);await click(page.getByRole('button',{name:'Try with a sample',exact:true}));
+ await page.locator('.word').first().waitFor();await page.waitForFunction(()=>document.querySelector('.video-stage>video')?.readyState>=2);await hold(1800);
+ report.checks.push('Bundled sample opened with a ready transcript and original media.');
+ const original=await page.locator('.word').count();
+ scene('02  Clean up in one click','Preview the removals. Apply them together. Undo whenever you need.');
+ await click(page.getByRole('button',{name:'Clean up',exact:true}));const menu=page.getByRole('dialog',{name:'Clean up',exact:true});
+ await menu.getByRole('button',{name:'Apply',exact:true}).waitFor();await page.waitForFunction(()=>document.querySelector('.cleanup-count')?.textContent.includes('filler'));await hold(1800);
+ await click(menu.getByRole('button',{name:'Apply',exact:true}));await page.waitForFunction(n=>document.querySelectorAll('.word').length<n,original);await hold(1600);
+ await click(menu.getByRole('button',{name:'Undo',exact:true}));assert.equal(await page.locator('.word').count(),original);await hold(1100);
+ await click(menu.getByRole('button',{name:'Close Clean up',exact:true}));
+ report.checks.push('Actual cleanup applied; one Undo restored the complete transcript.');
+ const seekStart=async()=>{await click(page.locator('.block-time').first());await page.waitForFunction(()=>document.querySelector('.video-stage>video')?.readyState>=2);};
+ const playAB=async(kind,title)=>{
+  scene(title,kind==='before'?'Original recording • listen to the background noise.':'DeepFilterNet cleanup + loudness normalization • same passage.');
+  await seekStart();await hold(700);await click(page.getByRole('button',{name:'Play composition',exact:true}));
+  await page.waitForFunction(()=>document.querySelector('.video-stage>video')?.currentTime>.1);
+  const sourceTime=await page.locator('.video-stage>video').evaluate(v=>v.currentTime),begin=elapsed()-sourceTime;
+  await page.waitForFunction(()=>document.querySelector('.video-stage>video')?.currentTime>=6);
+  await page.getByRole('button',{name:'Pause playback',exact:true}).click();
+  const endTime=await page.locator('.video-stage>video').evaluate(v=>v.currentTime);report.audio.push({kind,start:begin,sourceStart:0,duration:endTime});await hold(500);
+ };
+ await playAB('before','03  Studio Sound — BEFORE');
+ await click(page.getByRole('switch',{name:'Studio Sound preview',exact:true}));
+ assert.equal(await page.getByRole('switch',{name:'Studio Sound preview'}).getAttribute('aria-checked'),'true');
+ await playAB('after','03  Studio Sound — AFTER');report.checks.push('Real Before/After playback recorded from the matching original and processed sample.');
+ scene('04  A workspace that fits you','Dark mode. Draggable dividers. Your layout, remembered.');
+ await click(page.locator('.tool-rail button[title="Settings"]'));await click(page.getByRole('switch',{name:'Dark mode',exact:true}));await click(page.getByRole('button',{name:'Done',exact:true}));await hold(1000);
+ const divider=page.getByRole('separator',{name:'Resize Script and Preview',exact:true}),box=await divider.boundingBox();
+ await move(box.x,box.y+box.height/2);await page.mouse.down();await move(box.x+65,box.y+box.height/2);await page.mouse.up();await hold(1000);
+ report.checks.push('Dark mode and the actual Script/Preview resize divider demonstrated.');
+ scene('05  Export without a watermark','A real 1080p MP4 export, processed locally.');
+ await click(page.getByRole('button',{name:'Clean up',exact:true}));await menu.getByRole('button',{name:'Apply',exact:true}).waitFor();await hold(500);await click(menu.getByRole('button',{name:'Apply',exact:true}));await click(menu.getByRole('button',{name:'Close Clean up',exact:true}));
+ await click(page.getByRole('button',{name:'Export',exact:true}));await page.locator('select').filter({has:page.locator('option[value="1080"]')}).selectOption('1080');await hold(1300);
+ await click(page.getByRole('button',{name:'Export MP4',exact:true}));report.exportSubmitted=elapsed();await page.getByRole('link',{name:'Download MP4',exact:true}).waitFor({timeout:180000});report.exportCompleted=elapsed();await hold(500);
+ const finalFile=String(count++).padStart(6,'0')+'.jpg';captured.push({file:finalFile,data:await page.screenshot({type:'jpeg',quality:90})});report.frames.push({file:finalFile,time:elapsed()});await hold(2200);
+ report.checks.push('Real 1080p export finished and Download MP4 became available.');
+ report.duration=elapsed();await session.send('Page.stopScreencast');await hold(250);assert(report.frames.length>80);assert.deepEqual(report.errors,[]);report.passed=true;
+}finally{try{await session?.send('Page.stopScreencast');}catch{}await desktop.close();for(const frame of captured)fs.writeFileSync(path.join(frames,frame.file),frame.data);fs.writeFileSync(path.join(folder,'recording.json'),JSON.stringify(report,null,2));}
+console.log(`Recorded ${report.frames.length} frames over ${report.duration.toFixed(1)} seconds.`);
