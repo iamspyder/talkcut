@@ -1,0 +1,3 @@
+ffprobe supplied by ffprobe-static; see THIRD_PARTY_NOTICES.md. Upstream source: https://github.com/FFmpeg/FFmpeg/tree/n4.0.2
+Build/configuration/license output: ffprobe-runtime-build.txt
+Historical binary suppliers and dependency/build source must be verified before redistributing releases.

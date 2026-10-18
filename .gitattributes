@@ -1,0 +1,17 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.mjs text eol=lf
+*.jsx text eol=lf
+*.cjs text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.icns binary
+*.mp4 binary
+*.wav binary
+# Preserve upstream license text verbatim, including its whitespace.
+app/LICENSES/** -whitespace

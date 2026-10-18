@@ -1,0 +1,15 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {spawn} from 'node:child_process';
+import ffmpeg from 'ffmpeg-static';
+import {createOfflineServices} from '../offline-services.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),folder=path.join(root,'samples'),work=path.join(folder,'work');await fs.mkdir(work,{recursive:true});
+const run=(exe,args,options={})=>new Promise((resolve,reject)=>{const {captureStderr,...opts}=options;const p=spawn(exe,args,{windowsHide:true,...opts});let out='',err='';p.stdout.on('data',b=>out+=b);p.stderr.on('data',b=>err+=b);p.on('error',reject);p.on('close',c=>c?reject(Error(err)):resolve(captureStderr?err:out));});
+const file=path.join(folder,'sample.mp4');await run(ffmpeg,['-hide_banner','-loglevel','error','-y','-i',path.join(root,'data','seed','A-little-room-to-create.mp4'),'-f','lavfi','-i','anoisesrc=color=pink:amplitude=0.09:sample_rate=48000','-filter_complex','[0:a]aresample=48000[s];[s][1:a]amix=inputs=2:duration=first:normalize=0[a]','-map','0:v:0','-map','[a]','-t','20','-c:v','copy','-c:a','aac',file]);
+const asset={id:'bundled-sample',file,proxy:file,duration:20,type:'video',hasAudio:true,width:1280,height:720};const offline=createOfflineServices({data:work,nativeRoot:path.join(root,'native'),ffmpeg,run,getAsset:()=>asset,persistCatalog:async()=>{}});await offline.studioSound(asset.id,{});
+await fs.copyFile(asset.studioFile,path.join(folder,'sample-after.mp4'));await fs.copyFile(asset.studioAudio,path.join(folder,'sample-after.wav'));await run(ffmpeg,['-hide_banner','-loglevel','error','-y','-ss','1','-i',file,'-frames:v','1','-vf','scale=480:-2',path.join(folder,'sample.jpg')]);
+const raw=JSON.parse((await fs.readFile(path.join(root,'data','seed','words.json'),'utf8')).replace(/^\uFEFF/,''));const words=raw.filter(w=>w.word?.trim()&&w.start<20).map((w,i,all)=>{const text=w.word.trim(),next=all[i+1]?.word,previous=all[i-1]?.word;const suffix=text==='edit'||text==='everything'||text==='idea'&&next==='But'||text==='happens'&&previous==='interesting'?'.':['breathe','Um'].includes(text)?',':'';return {text:text+suffix,start:w.start,end:Math.min(20,all[i+1]?.start??20),speaker:'Alex'};});
+const wave=path.join(work,'wave.f32');await run(ffmpeg,['-hide_banner','-loglevel','error','-y','-i',file,'-vn','-ar','1000','-ac','1','-f','f32le',wave]);const bytes=await fs.readFile(wave),samples=new Float32Array(bytes.buffer,bytes.byteOffset,bytes.length/4),waveform=[],stride=Math.ceil(samples.length/100);for(let i=0;i<samples.length;i+=stride){let sum=0,count=Math.min(stride,samples.length-i);for(let j=0;j<count;j++)sum+=samples[i+j]**2;waveform.push(Math.min(1,Math.sqrt(sum/count)*4));}
+await fs.writeFile(path.join(folder,'sample.json'),JSON.stringify({name:'A little room to create',duration:20,width:1280,height:720,words,waveform},null,2));
+const resolved=path.resolve(work);if(resolved!==path.join(root,'samples','work'))throw Error('Unexpected sample work directory');await fs.rm(resolved,{recursive:true,force:true});console.log('Bundled 20-second sample and processed A/B media ready');

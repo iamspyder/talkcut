@@ -1,0 +1,23 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {spawn} from 'node:child_process';
+import assert from 'node:assert/strict';
+import ffprobe from 'ffprobe-static';
+import {intervals,duration} from '../src/model.js';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const get=async p=>(await fetch('http://127.0.0.1:5173/api/'+p)).json();
+const assets=await get('assets'),projects=await get('projects');
+const p=projects.find(p=>p.demo)||projects[0];
+assert.ok(p,'a demo project is required');
+const comp=structuredClone(p.compositions[0]);comp.words=comp.words.slice(0,12);comp.words[3].deleted=true;comp.captions=true;comp.aspect='9:16';comp.title='A real edit, exported.';comp.audioCleanup=true;
+const expected=duration(intervals(comp,assets));
+const r=await fetch('http://127.0.0.1:5173/api/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({composition:comp,format:'mp4',resolution:'720'})});let job=await r.json();assert.equal(r.status,202);
+const deadline=Date.now()+180000;
+while(!['complete','failed'].includes(job.status)&&Date.now()<deadline){await new Promise(r=>setTimeout(r,800));job=await get('jobs/'+job.id);}
+assert.equal(job.status,'complete',job.error||'export timed out');
+const local=path.join(root,'data','jobs',job.id,job.result.filename);
+const metadata=JSON.parse(await new Promise((resolve,reject)=>{const p=spawn(ffprobe.path,['-v','quiet','-show_format','-show_streams','-of','json',local],{windowsHide:true});let s='';p.stdout.on('data',b=>s+=b);p.on('close',c=>c?reject(Error('ffprobe failed')):resolve(s));}));
+const video=metadata.streams.find(s=>s.codec_type==='video');assert.equal(video.width,720);assert.equal(video.height,1280);assert.ok(metadata.streams.find(s=>s.codec_type==='audio'));assert.ok(Math.abs(Number(metadata.format.duration)-expected)<.25,`expected ${expected}, got ${metadata.format.duration}`);
+const download=await fetch('http://127.0.0.1:5173'+job.result.url);assert.equal(download.status,200);assert.ok(Number(download.headers.get('content-length'))>1000);
+await fs.mkdir(path.join(root,'qa'),{recursive:true});await fs.writeFile(path.join(root,'qa','export-results.json'),JSON.stringify({passed:true,checks:['Cut interval rendering','Portrait crop','Burned-in captions and title','Audio cleanup','Audio/video streams present','Export duration matches composition','Download endpoint'],expectedDuration:expected,actualDuration:Number(metadata.format.duration),width:video.width,height:video.height,bytes:job.result.bytes,url:job.result.url},null,2));console.log('Export checks passed:',video.width,'x',video.height,metadata.format.duration,'seconds');

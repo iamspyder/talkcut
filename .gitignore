@@ -1,0 +1,52 @@
+# Dependencies, builds and local runtime data
+**/node_modules/
+**/dist/
+**/release/
+**/out/
+**/coverage/
+app/data/
+app/native/
+app/qa/
+research/
+.tools/
+.audit/
+
+# Credentials and machine-specific settings
+.env*
+**/.env*
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Downloaded models, executables and generated test media
+ggml-*.bin
+*.gguf
+*.onnx
+*.onnx.tar.gz
+**/models/
+ffmpeg
+ffmpeg.exe
+ffprobe
+ffprobe.exe
+*.dll
+*.exe
+*.dmg
+*.AppImage
+*.7z
+*.zip
+*.tar.gz
+app/samples/work/
+**/test-results/
+**/playwright-report/
+**/test-output*/
+**/offline-*.mp4
+**/export-*.mp4
+**/*.part
+
+# Curated icons, demo assets and screenshots are intentionally versioned.

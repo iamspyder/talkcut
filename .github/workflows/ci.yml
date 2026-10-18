@@ -1,0 +1,44 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run audit:repo
+      - run: npm audit --omit=dev --audit-level=moderate
+      - name: Scan full Git history for secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=8.30.1
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${version}"
+          curl -fsSL "$base/gitleaks_${version}_linux_x64.tar.gz" -o "$RUNNER_TEMP/gitleaks.tar.gz"
+          curl -fsSL "$base/gitleaks_${version}_checksums.txt" -o "$RUNNER_TEMP/gitleaks-checksums.txt"
+          expected=$(awk -v f="gitleaks_${version}_linux_x64.tar.gz" '$2 == f {print $1}' "$RUNNER_TEMP/gitleaks-checksums.txt")
+          test -n "$expected"
+          echo "$expected  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+          "$RUNNER_TEMP/gitleaks" git .. --redact --no-banner --log-opts="--all"

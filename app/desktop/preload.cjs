@@ -1,0 +1,2 @@
+const {contextBridge,ipcRenderer}=require('electron');
+contextBridge.exposeInMainWorld('talkcutDesktop',Object.freeze({status:()=>ipcRenderer.invoke('desktop:status'),update:action=>ipcRenderer.invoke('desktop:updates',action),onUpdate:callback=>{const handler=(_event,value)=>callback(value);ipcRenderer.on('desktop:update',handler);return()=>ipcRenderer.removeListener('desktop:update',handler);}}));

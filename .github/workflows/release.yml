@@ -1,0 +1,95 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: win
+          - os: macos-latest
+            target: mac
+          - os: ubuntu-latest
+            target: linux
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enable x64 helpers on Apple Silicon runner
+        if: runner.os == 'macOS'
+        run: if [ "$(uname -m)" = arm64 ]; then softwareupdate --install-rosetta --agree-to-license; fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          architecture: x64
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Verify version tag
+        run: node -e "if(process.env.GITHUB_REF_NAME!=='v'+require('./package.json').version)process.exit(1)"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run native:setup
+      - run: npm run notices
+      - run: npm run build
+      - name: Package desktop application
+        run: npx electron-builder --config electron-builder.cjs --${{ matrix.target }} --x64 --publish never
+        env:
+          ELECTRON_BUILDER_COMPRESSION_LEVEL: '1'
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - run: node scripts/release-assets.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TalkCut-${{ matrix.target }}
+          if-no-files-found: error
+          path: |
+            app/release/*.exe
+            app/release/*.dmg
+            app/release/*.zip
+            app/release/*.AppImage
+            app/release/latest*.yml
+            app/release/*.blockmap
+            app/release/*-SHA256SUMS.txt
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: TalkCut-*
+          merge-multiple: true
+          path: artifacts
+      - name: Verify downloaded asset checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd artifacts
+          for manifest in *-SHA256SUMS.txt; do sha256sum -c "$manifest"; done
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          name: TalkCut ${{ github.ref_name }}
+          body: |
+            Maintained and owned by Rajan Gupta. Review platform smoke tests, signing status and native-helper Corresponding Source before publishing this draft. Windows/macOS builds may be unsigned when signing secrets are not configured. Check the SHA256SUMS files before installation.
+          files: artifacts/*

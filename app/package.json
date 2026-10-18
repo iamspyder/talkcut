@@ -1,0 +1,66 @@
+{
+  "name": "talkcut",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "vite build",
+    "test": "node --test tests/*.test.mjs",
+    "start": "node server.mjs --production",
+    "test:browser": "node scripts/browser-check.mjs",
+    "test:layers": "node scripts/layers-browser-check.mjs",
+    "desktop": "electron .",
+    "native:setup": "node scripts/setup-native.mjs",
+    "dist": "npm run build && electron-builder --config electron-builder.cjs --publish never",
+    "dist:win": "npm run dist -- --win nsis",
+    "dist:mac": "npm run dist -- --mac dmg zip",
+    "dist:linux": "npm run dist -- --linux AppImage",
+    "test:offline": "node scripts/offline-desktop-check.mjs",
+    "lint": "eslint .",
+    "notices": "node scripts/notices.mjs",
+    "audit:repo": "node scripts/audit-repo.mjs",
+    "test:layout": "node scripts/layout-check.mjs"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9",
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "playwright-core": "^1.64.1",
+    "vite": "^6.1.0"
+  },
+  "description": "Free offline video editor: edit video by editing text, remove filler words, clean up audio and export without a watermark.",
+  "author": "Rajan Gupta",
+  "license": "MIT",
+  "main": "desktop/main.cjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamspyder/talkcut.git"
+  },
+  "homepage": "https://github.com/iamspyder/talkcut#readme",
+  "bugs": {
+    "url": "https://github.com/iamspyder/talkcut/issues"
+  },
+  "keywords": [
+    "descript-alternative",
+    "video-editor",
+    "transcript-editing",
+    "whisper",
+    "electron",
+    "podcast",
+    "offline"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

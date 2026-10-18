@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {prepareWords,intervals,duration,sourceAt,subtitles,srt,emptyComposition} from '../src/model.js';
+const asset={id:'a',duration:10};
+const raw=[{word:'Hello',start:0,end:2},{word:'um',start:2,end:4},{word:'world',start:4,end:10}];
+test('non-destructive cuts change output time without changing source time',()=>{const c=emptyComposition('test',['a']);c.words=prepareWords(raw,asset);c.words[1].deleted=true;const s=intervals(c,[asset]);assert.equal(duration(s),8);assert.deepEqual(s.map(x=>[x.start,x.end]),[[0,2],[4,10]]);assert.equal(sourceAt(s,3).time,5);assert.equal(asset.duration,10);});
+test('caption timestamps follow cuts and preserve hide-text semantics',()=>{const c=emptyComposition('test',['a']);c.words=prepareWords(raw,asset);c.words[1].deleted=true;let cues=subtitles(c,intervals(c,[asset]));assert.equal(cues[1].start,2);c.words[2].hidden=true;assert.equal(duration(intervals(c,[asset])),8);assert.equal(subtitles(c,intervals(c,[asset])).length,1);});
+test('copying or moving a passage preserves occurrence order',()=>{const c=emptyComposition('test',['a']);const words=prepareWords(raw,asset);c.words=[words[2],words[0],{...words[2],id:'copy'}];const s=intervals(c,[asset]);assert.deepEqual(s.map(x=>[x.start,x.end]),[[4,10],[0,2],[4,10]]);assert.equal(duration(s),14);});
+test('correction text alone does not alter media intervals',()=>{const c=emptyComposition('test',['a']);c.words=prepareWords(raw,asset);const before=intervals(c,[asset]);c.words[0].text='Hi';assert.deepEqual(intervals(c,[asset]),before);});
+test('an untranscribed source still exports its complete duration',()=>{assert.equal(duration(intervals(emptyComposition('test',['a']),[asset])),10);});
+test('SRT formatting carries milliseconds across minutes',()=>{assert.equal(srt([{start:59.9996,end:61.25,text:'A cue'}]),'1\n00:01:00,000 --> 00:01:01,250\nA cue\n');});

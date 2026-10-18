@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a reproducible problem in TalkCut
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "For security issues, use SECURITY.md. Do not attach private recordings, secrets or unredacted logs."
+  - type: input
+    id: version
+    attributes:
+      label: TalkCut version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Operating system, version and CPU architecture
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use a small synthetic file if media is necessary.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or redacted logs
+  - type: dropdown
+    id: network
+    attributes:
+      label: Does this happen with Optional AI disabled?
+      options: ["Yes", "No", "Not tested"]

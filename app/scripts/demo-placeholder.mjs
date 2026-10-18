@@ -1,0 +1,2 @@
+import {execFileSync} from 'node:child_process';import ffmpeg from 'ffmpeg-static';
+execFileSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-i','../docs/screenshots/workspace-light.png','-vf',"scale=960:-2,drawbox=x=0:y=ih-48:w=iw:h=48:color=0x7357e9:t=fill,drawtext=text='Demo recording coming soon':x=(w-tw)/2:y=h-36:fontsize=20:fontcolor=white",'-frames:v','1','../docs/demo.gif'],{windowsHide:true});
