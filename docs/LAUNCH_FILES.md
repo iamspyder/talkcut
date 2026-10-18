@@ -140,3 +140,10 @@ README.md; app/package.json and package-lock.json; app/release-config.json; app/
 - docs/screenshots/workspace-dark.png
 - docs/screenshots/workspace-light.png
 - docs/LAUNCH_FILES.md
+
+## Post-preparation additions
+
+- app/scripts/native-download.mjs — retry and integrity handling for native downloads.
+- app/tests/native-download.test.mjs — interrupted download/cache/checksum regression tests.
+- app/tests/packaging-config.test.mjs — unsigned/configured signing regression tests.
+- docs/GITHUB_VERIFICATION.md — hosted build, asset and security verification results.

@@ -21,7 +21,7 @@
 | macOS Intel / Apple Silicon with Rosetta | [Download .dmg](https://github.com/iamspyder/talkcut/releases/latest/download/TalkCut-macOS-x64.dmg) |
 | Linux x86_64 | [Download AppImage](https://github.com/iamspyder/talkcut/releases/latest/download/TalkCut-Linux-x86_64.AppImage) |
 
-[All releases, SHA-256 checksums and update metadata](https://github.com/iamspyder/talkcut/releases). Local preparation has not uploaded public binaries. macOS/Linux packages must be smoke-tested on their target platforms. For AppImage, make the downloaded file executable before launching.
+[All releases, SHA-256 checksums and update metadata](https://github.com/iamspyder/talkcut/releases). The verified v1.0.3 installers are in a draft release pending signing/native-license review; public download links activate after publication. macOS/Linux packages must be smoke-tested on their target platforms. For AppImage, make the downloaded file executable before launching.
 
 This app bundles FFmpeg/ffprobe, including GPL-enabled builds. [Third-party notices and source/build notes](THIRD_PARTY_NOTICES.md) describe their separate terms. TalkCut's own code is MIT licensed.
 
@@ -82,7 +82,7 @@ npm run build
 npm run desktop
 ```
 
-Installers: `npm run dist:win`, `npm run dist:mac`, `npm run dist:linux`. Local commands never publish. The release workflow builds x64 macOS packages, using Rosetta on ARM hosts. See [release instructions](docs/RELEASING.md), [development details](app/README.md) and [verification scope](docs/LAUNCH_VERIFICATION.md).
+Installers: `npm run dist:win`, `npm run dist:mac`, `npm run dist:linux`. Local commands never publish. The release workflow builds x64 macOS packages, using Rosetta on ARM hosts. See [release instructions](docs/RELEASING.md), [development details](app/README.md) and [verification scope](docs/LAUNCH_VERIFICATION.md) and [successful GitHub build verification](docs/GITHUB_VERIFICATION.md).
 
 ## Roadmap
 

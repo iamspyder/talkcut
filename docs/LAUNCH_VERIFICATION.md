@@ -30,3 +30,7 @@ Prepared on 2026-10-18 for **Rajan Gupta**, sole project owner, targeting `iamsp
 - Replace `docs/demo.gif` (an explicitly labeled placeholder), configure funding if desired, enable private vulnerability reporting and review synthetic OS-voice redistribution rights.
 
 See [LAUNCH_FILES.md](LAUNCH_FILES.md) for the complete initial-commit file inventory and added/updated launch-file summary, and [RELEASING.md](RELEASING.md) for exact push commands.
+
+## Hosted verification follow-up
+
+The repository has now been pushed. See [GITHUB_VERIFICATION.md](GITHUB_VERIFICATION.md) for the successful v1.0.3 three-platform builds, uploaded draft assets, checksums, security settings and remaining release-review limits. The sections above record the earlier local preparation snapshot.
